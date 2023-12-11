@@ -1,6 +1,7 @@
 //! Data model. All structs and attributes coresponds with official API
 //! [documentation](https://fakturoid.docs.apiary.io)
 
+use base64::Engine;
 use chrono::{DateTime, Local, NaiveDate};
 use rust_decimal::Decimal;
 use serde::{Deserialize, Serialize};
@@ -13,7 +14,7 @@ use std::path::Path;
 pub enum VatMode {
     VatPayer,
     NonVatPayer,
-    IdentifiedPerson
+    IdentifiedPerson,
 }
 
 #[derive(Debug, Deserialize)]
@@ -453,7 +454,7 @@ impl Invoice {
             self.attachment = Some(Attachment::Update(format!(
                 "data:{};base64,{}",
                 tree_magic::from_u8(&file_content),
-                base64::encode_config(file_content, base64::STANDARD_NO_PAD)
+                base64::engine::general_purpose::STANDARD_NO_PAD.encode(file_content),
             )));
             return Ok(());
         }
@@ -482,7 +483,7 @@ pub struct InvoicePayData {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub variable_symbol: Option<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub bank_account_id: Option<i32>
+    pub bank_account_id: Option<i32>,
 }
 
 pub enum InvoiceAction {
@@ -496,23 +497,24 @@ pub enum InvoiceAction {
     Cancel,
     UndoCancel,
     Lock,
-    Unlock
+    Unlock,
 }
 
 impl ToString for InvoiceAction {
     fn to_string(&self) -> String {
         match self {
-            InvoiceAction::MarkAsSent => { "mark_as_sent" }
-            InvoiceAction::Deliver => { "deliver" }
-            InvoiceAction::Pay => { "pay" }
-            InvoiceAction::PayProforma => { "pay_proforma" }
-            InvoiceAction::PayPartialProforma => { "pay_partial_proforma" }
-            InvoiceAction::RemovePayment => { "remove_payment" }
-            InvoiceAction::DeliverReminder => { "deliver_reminder" }
-            InvoiceAction::Cancel => { "cancel" }
-            InvoiceAction::UndoCancel => { "undo_cancel" }
-            InvoiceAction::Lock => { "lock" }
-            InvoiceAction::Unlock => { "unlock" }
-        }.to_string()
+            InvoiceAction::MarkAsSent => "mark_as_sent",
+            InvoiceAction::Deliver => "deliver",
+            InvoiceAction::Pay => "pay",
+            InvoiceAction::PayProforma => "pay_proforma",
+            InvoiceAction::PayPartialProforma => "pay_partial_proforma",
+            InvoiceAction::RemovePayment => "remove_payment",
+            InvoiceAction::DeliverReminder => "deliver_reminder",
+            InvoiceAction::Cancel => "cancel",
+            InvoiceAction::UndoCancel => "undo_cancel",
+            InvoiceAction::Lock => "lock",
+            InvoiceAction::Unlock => "unlock",
+        }
+        .to_string()
     }
 }

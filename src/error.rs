@@ -164,7 +164,7 @@ impl fmt::Display for FakturoidError {
                 } else {
                     f.write_str("Malformed input data.")
                 }
-            },
+            }
             Kind::Forbidden => f.write_str("Forbidden operation"),
             Kind::EntityDoesNotExists => f.write_str("Entity does not exists"),
             Kind::Unauthorized => f.write_str("Operation is not authorized. Check credentials"),

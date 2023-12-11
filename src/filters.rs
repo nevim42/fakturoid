@@ -1,6 +1,6 @@
-use std::collections::HashMap;
-use chrono::{DateTime, Local};
 use crate::models::InvoiceState;
+use chrono::{DateTime, Local};
+use std::collections::HashMap;
 
 /// Filter builder trait for implement concrete filtering.
 pub trait FilterBuilder {

@@ -309,7 +309,6 @@ impl Fakturoid {
     /// ```no_run
     /// extern crate tokio;
     /// use fakturoid::models::Invoice;
-    /// use tokio::prelude::*;
     /// use fakturoid::client::Fakturoid;
     ///
     /// #[tokio::main]
@@ -361,7 +360,6 @@ impl Fakturoid {
     /// ```no_run
     /// extern crate tokio;
     /// use fakturoid::models::Subject;
-    /// use tokio::prelude::*;
     /// use fakturoid::client::Fakturoid;
     ///
     /// #[tokio::main]
@@ -398,7 +396,6 @@ impl Fakturoid {
     /// ```no_run
     /// extern crate tokio;
     /// use fakturoid::models::Invoice;
-    /// use tokio::prelude::*;
     /// use fakturoid::client::Fakturoid;
     ///
     /// #[tokio::main]
@@ -438,7 +435,6 @@ impl Fakturoid {
     /// ```no_run
     /// extern crate tokio;
     /// use fakturoid::models::Invoice;
-    /// use tokio::prelude::*;
     /// use fakturoid::client::Fakturoid;
     ///
     /// #[tokio::main]

@@ -8,10 +8,10 @@
 //! - Subjects: create, update, delete, list, filters and fulltext
 //! - Invoices: create, update, delete, list, filters and fulltext, invoice actions
 
-pub mod models;
 pub mod client;
 pub mod error;
 pub mod filters;
+pub mod models;
 
 #[cfg(test)]
 mod tests {
@@ -25,7 +25,7 @@ mod tests {
             "fake@user.com",
             "apicode",
             "testslug",
-            Some("Rust API client TEST (pepa@bukova.info)")
+            Some("Rust API client TEST (pepa@bukova.info)"),
         );
 
         let mut rt = tokio::runtime::Runtime::new().unwrap();
