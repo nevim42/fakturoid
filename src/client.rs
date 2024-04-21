@@ -216,45 +216,21 @@ impl Fakturoid {
     where
         T: Entity + DeserializeOwned,
     {
-        tracing::debug!(
-            fa_user = self.user,
-            fa_password = self.password,
-            "Fakturoid::get_url() basic auth"
-        );
         let resp = if let Some(flt) = filter {
-            let builder = self
-                .client
+            self.client
                 .get(url)
                 .basic_auth(self.user.as_str(), Some(self.password.as_str()))
                 .header("User-Agent", self.user_agent())
-                .query(&flt);
-            tracing::debug!("Fakturoid::get_url() builder: {:?}", builder);
-            let resp = builder.send().await?;
-            tracing::debug!("Fakturoid::get_url() response: {:?}", resp);
-            resp
-            // self.client
-            //     .get(url)
-            //     .basic_auth(self.user.as_str(), Some(self.password.as_str()))
-            //     .header("User-Agent", self.user_agent())
-            //     .query(&flt)
-            //     .send()
-            //     .await?
+                .query(&flt)
+                .send()
+                .await?
         } else {
-            let builder = self
-                .client
+            self.client
                 .get(url)
                 .basic_auth(self.user.as_str(), Some(self.password.as_str()))
-                .header("User-Agent", self.user_agent());
-            tracing::debug!("Fakturoid::get_url() builder: {:?}", builder);
-            let resp = builder.send().await?;
-            tracing::debug!("Fakturoid::get_url() response: {:?}", resp);
-            resp
-            // self.client
-            //     .get(url)
-            //     .basic_auth(self.user.as_str(), Some(self.password.as_str()))
-            //     .header("User-Agent", self.user_agent())
-            //     .send()
-            //     .await?
+                .header("User-Agent", self.user_agent())
+                .send()
+                .await?
         };
 
         self.paged_response(resp).await
@@ -399,25 +375,16 @@ impl Fakturoid {
     where
         T: Entity + Serialize + DeserializeOwned,
     {
-        let builder = self
-            .client
-            .post(&format!("{}{}.json", self.url_first(), T::url_part()))
-            .basic_auth(self.user.as_str(), Some(self.password.as_str()))
-            .header("User-Agent", self.user_agent())
-            .json(&entity);
-        tracing::debug!("Fakturoid::create() builder: {:?}", builder);
-        let response = builder.send().await?;
-        tracing::debug!("Fakturoid::create() response: {:?}", response);
-        // Self::evaluate_response(
-        //     self.client
-        //         .post(&format!("{}{}.json", self.url_first(), T::url_part()))
-        //         .basic_auth(self.user.as_str(), Some(self.password.as_str()))
-        //         .header("User-Agent", self.user_agent())
-        //         .json(&entity)
-        //         .send()
-        //         .await?,
-        // )
-        Self::evaluate_response(response).await
+        Self::evaluate_response(
+            self.client
+                .post(&format!("{}{}.json", self.url_first(), T::url_part()))
+                .basic_auth(self.user.as_str(), Some(self.password.as_str()))
+                .header("User-Agent", self.user_agent())
+                .json(&entity)
+                .send()
+                .await?,
+        )
+        .await
     }
 
     /// List of entities. If there is more than 20 entities first 20 will be returned as
