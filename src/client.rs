@@ -217,20 +217,39 @@ impl Fakturoid {
         T: Entity + DeserializeOwned,
     {
         let resp = if let Some(flt) = filter {
-            self.client
+            let builder = self
+                .client
                 .get(url)
                 .basic_auth(self.user.as_str(), Some(self.password.as_str()))
                 .header("User-Agent", self.user_agent())
-                .query(&flt)
-                .send()
-                .await?
+                .query(&flt);
+            tracing::debug!("Fakturoid::get_url() builder: {:?}", builder);
+            let resp = builder.send().await?;
+            tracing::debug!("Fakturoid::get_url() response: {:?}", resp);
+            resp
+            // self.client
+            //     .get(url)
+            //     .basic_auth(self.user.as_str(), Some(self.password.as_str()))
+            //     .header("User-Agent", self.user_agent())
+            //     .query(&flt)
+            //     .send()
+            //     .await?
         } else {
-            self.client
+            let builder = self
+                .client
                 .get(url)
                 .basic_auth(self.user.as_str(), Some(self.password.as_str()))
-                .header("User-Agent", self.user_agent())
-                .send()
-                .await?
+                .header("User-Agent", self.user_agent());
+            tracing::debug!("Fakturoid::get_url() builder: {:?}", builder);
+            let resp = builder.send().await?;
+            tracing::debug!("Fakturoid::get_url() response: {:?}", resp);
+            resp
+            // self.client
+            //     .get(url)
+            //     .basic_auth(self.user.as_str(), Some(self.password.as_str()))
+            //     .header("User-Agent", self.user_agent())
+            //     .send()
+            //     .await?
         };
 
         self.paged_response(resp).await
