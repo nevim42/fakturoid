@@ -375,16 +375,25 @@ impl Fakturoid {
     where
         T: Entity + Serialize + DeserializeOwned,
     {
-        Self::evaluate_response(
-            self.client
-                .post(&format!("{}{}.json", self.url_first(), T::url_part()))
-                .basic_auth(self.user.as_str(), Some(self.password.as_str()))
-                .header("User-Agent", self.user_agent())
-                .json(&entity)
-                .send()
-                .await?,
-        )
-        .await
+        let builder = self
+            .client
+            .post(&format!("{}{}.json", self.url_first(), T::url_part()))
+            .basic_auth(self.user.as_str(), Some(self.password.as_str()))
+            .header("User-Agent", self.user_agent())
+            .json(&entity);
+        tracing::debug!("Fakturoid::create() builder: {:?}", builder);
+        let response = builder.send().await?;
+        tracing::debug!("Fakturoid::create() response: {:?}", response);
+        // Self::evaluate_response(
+        //     self.client
+        //         .post(&format!("{}{}.json", self.url_first(), T::url_part()))
+        //         .basic_auth(self.user.as_str(), Some(self.password.as_str()))
+        //         .header("User-Agent", self.user_agent())
+        //         .json(&entity)
+        //         .send()
+        //         .await?,
+        // )
+        Self::evaluate_response(response).await
     }
 
     /// List of entities. If there is more than 20 entities first 20 will be returned as
