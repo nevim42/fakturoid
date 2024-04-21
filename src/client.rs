@@ -216,6 +216,11 @@ impl Fakturoid {
     where
         T: Entity + DeserializeOwned,
     {
+        tracing::debug!(
+            fa_user = self.user,
+            fa_password = self.password,
+            "Fakturoid::get_url() basic auth"
+        );
         let resp = if let Some(flt) = filter {
             let builder = self
                 .client
